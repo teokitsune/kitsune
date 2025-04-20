@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Тест Kitsune</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      background: #eee;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    label.correct { background-color: #c8f7c5; }
+    label.incorrect { background-color: #f7c5c5; }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>Тест по Макроэкономике</h1>
+  <form id="quizForm"></form>
+  <button onclick="checkAnswers()">Проверить</button>
+  <div id="result"></div>
+  <div class="footer">mustafo</div>
+  <script>
+    const questions = [
+  { q: "Каких макроэкономических агентов включает в себя трехсекторная модель экономики?", options: ["домашнее хозяйство, государственный сектор, фирмы (предприятия)", "иностранный сектор, государственный сектор, домашнее хозяйство", "домашнее хозяйство, фирмы (предприятия), иностранный сектор", "иностранный сектор, фирмы (предприятия), государственный сектор"], answer: 0 },
+  { q: "Какой сектор НЕ относится к макроэкономическим субъектам?", options: ["сельскохозяйственный сектор", "предпринимательский сектор", "сектор домашних хозяйств", "государственный сектор"], answer: 0 },
+  { q: "Какой метод макроэкономических исследований является основным?", options: ["метод моделирования", "метод экстраполяции", "метод сравнительного анализа", "метод анализа публикаций"], answer: 0 },
+  { q: "Когда возникла макроэкономика как наука?", options: ["в XX столетии", "в XІХ столетии", "в XVІІ столетии", "в XVІ столетии"], answer: 0 },
+  { q: "Как называется макроэкономический агент, который при включении в модель кругооборота преобразует закрытую экономику в открытую экономику?", options: ["иностранный сектор", "домашние хозяйства", "государство", "предприятия"], answer: 0 },
+];
+
+    function renderQuiz() {
+      const form = document.getElementById('quizForm');
+      form.innerHTML = '';
+      questions.forEach((q, idx) => {
+        const correctText = q.options[q.answer];
+        const shuffled = [...q.options];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        q.options = shuffled;
+        q.answer = shuffled.indexOf(correctText);
+        const block = document.createElement('div');
+        block.className = 'question';
+        block.innerHTML = `<h3>${idx+1}. ${q.q}</h3>`;
+        shuffled.forEach((opt, i) => {
+          block.innerHTML += `<label><input type='radio' name='q${idx}' value='${i}'> ${opt}</label>`;
+        });
+        form.appendChild(block);
+      });
+    }
+
+    function checkAnswers() {
+      let correct = 0;
+      questions.forEach((q, idx) => {
+        const radios = document.getElementsByName('q'+idx);
+        radios.forEach((r, i) => {
+          const label = r.parentElement;
+          label.classList.remove('correct', 'incorrect');
+          if (i == q.answer) label.classList.add('correct');
+          if (r.checked && i != q.answer) label.classList.add('incorrect');
+          if (r.checked && i == q.answer) correct++;
+        });
+      });
+      document.getElementById('result').innerText = `Правильных ответов: ${correct} из ${questions.length}`;
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
